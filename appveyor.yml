@@ -13,4 +13,22 @@ configuration: Release
 build:
   parallel: true
   project: C:\drinkcoin\build\release\Bytecoin.sln
-deploy: off
+after_build:
+  - ps: |
+      mkdir C:\drinkcoin\build\packages
+      $env:ARCHIVE_VERSION = $env:APPVEYOR_REPO_COMMIT.Substring(0, 8)
+      if ($env:APPVEYOR_REPO_TAG -eq "true") {
+          # Building a tag
+          $env:ARCHIVE_VERSION = $env:APPVEYOR_REPO_TAG_NAME
+      }
+      7z a C:\drinkcoin\build\packages\drinkcoin-$env:ARCHIVE_VERSION-windows.zip C:\drinkcoin\build\release\src\release\*.exe
+artifacts:
+  - path: build\packages\drinkcoin*.zip
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: bDOSWai8o85Ss9rEqEXkfZi27ijVDfMlpb6x910VlobREuINsS3RuG7lvAp+vU4s
+  artifact: /drinkcoin.*\.zip/
+  on:
+    branch: master
+    appveyor_repo_tag: true

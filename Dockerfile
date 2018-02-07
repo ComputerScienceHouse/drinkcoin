@@ -9,4 +9,4 @@ WORKDIR /usr/src
 ENV CXXFLAGS="-std=gnu++11"
 ENV MAKEFLAGS="-j2"
 
-CMD ["/bin/bash", "/usr/src/build.sh"]
+CMD ["/bin/bash", "/usr/src/utils/build.sh"]
